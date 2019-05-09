@@ -3,20 +3,21 @@
 #include<SFML/Audio.hpp>
 #include <ctime>
 #include "Move.h"
+#include "random.h"
 
 using namespace std;
 using namespace sf;
 
 
 
-int random(int b[])
+/*int random(int b[])
 {
 	srand(time(0));
 	int temp = rand() % 5;
 	if (b[temp] % 2 == 0) return 2;
 	else return 4;
 
-}
+}*/
 
 const int width = 1200;
 const int height = 600;
@@ -114,7 +115,7 @@ bool checkWin(int a[4][4])
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
-			if (a[i][j] == 16) return true;
+			if (a[i][j] == 2048) return true;
 	}
 
 	return false;
@@ -138,195 +139,14 @@ bool checkGameOver(int a[4][4])
 		for (int j = 0; j < 4; j++)
 			if (checkElement(a))
 			{
-				if (a[i][j] != a[i][j + 1] || a[i][j] != a[i + 1][j]) return true;
+				if (((i >= 0 && i <= 2) && (a[i][j] != a[i][j + 1] && a[i][j] != a[i + 1][j])) || (i = 3 && a[i][j] != a[i][j + 1])) return true;
 			}
 	}
 	return false;
 }
 
 
-/*void Right(int a[][4])
-{
 
-
-	for (int row = 0; row < 4; row++)
-	{
-		vector<int> tmp1;
-		vector<int> tmp2;
-		for (int i = 3; i > -1; i--)
-		{
-			if (a[row][i] != 0)
-			{
-				tmp1.push_back(a[row][i]);
-			}
-		}
-
-		if (tmp1.size() > 0)
-		{
-			for (int i = 0; i < tmp1.size() - 1; i++)
-			{
-				if (tmp1[i] == tmp1[i + 1] && tmp1[i] != 0)
-				{
-					tmp1[i] *= 2;
-					tmp1[i + 1] = 0;
-					sum += tmp1[i];
-				}
-			}
-
-			for (int i = 0; i < tmp1.size(); i++)
-			{
-				if (tmp1[i] != 0) tmp2.push_back(tmp1[i]);
-			}
-
-
-			if (tmp2.size() < 4)
-				for (int i = 0; i < 4; i++)
-				{
-					if (3 - i < tmp2.size())
-						a[row][i] = tmp2[3 - i]; else a[row][i] = 0;
-				}
-		}
-
-	}
-}
-
-
-void Down(int a[][4])
-{
-
-
-	for (int col = 0; col < 4; col++)
-	{
-		vector<int> tmp1;
-		vector<int> tmp2;
-		for (int i = 3; i > -1; i--)
-		{
-			if (a[i][col] != 0)
-			{
-				tmp1.push_back(a[i][col]);
-			}
-		}
-
-		if (tmp1.size() > 0)
-		{
-			for (int i = 0; i < tmp1.size() - 1; i++)
-			{
-				if (tmp1[i] == tmp1[i + 1] && tmp1[i] != 0)
-				{
-					tmp1[i] *= 2;
-					tmp1[i + 1] = 0;
-					sum += tmp1[i];
-				}
-			}
-
-			for (int i = 0; i < tmp1.size(); i++)
-			{
-				if (tmp1[i] != 0) tmp2.push_back(tmp1[i]);
-			}
-
-
-			if (tmp2.size() < 4)
-				for (int i = 0; i < 4; i++)
-				{
-					if (3 - i < tmp2.size())
-						a[i][col] = tmp2[3 - i]; else a[i][col] = 0;
-				}
-		}
-
-	}
-}
-
-
-void Left(int a[][4])
-{
-
-	for (int row = 0; row < 4; row++)
-	{
-		vector<int> tmp1;
-		vector<int> tmp2;
-		for (int i = 0; i < 4; i++)
-		{
-			if (a[row][i] != 0)
-			{
-				tmp1.push_back(a[row][i]);
-			}
-		}
-
-		if (tmp1.size() > 0)
-		{
-			for (int i = 0; i < tmp1.size() - 1; i++)
-			{
-				if (tmp1[i] == tmp1[i + 1] && tmp1[i] != 0)
-				{
-					tmp1[i] *= 2;
-					tmp1[i + 1] = 0;
-					sum += tmp1[i];
-				}
-			}
-
-			for (int i = 0; i < tmp1.size(); i++)
-			{
-				if (tmp1[i] != 0) tmp2.push_back(tmp1[i]);
-			}
-
-
-			if (tmp2.size() < 4)
-				for (int i = 0; i < 4; i++)
-				{
-					if (i < tmp2.size())
-						a[row][i] = tmp2[i]; else a[row][i] = 0;
-				}
-		}
-
-	}
-
-}
-
-
-void Up(int a[][4])
-{
-
-	for (int col = 0; col < 4; col++)
-	{
-		vector<int> tmp1;
-		vector<int> tmp2;
-		for (int i = 0; i < 4; i++)
-		{
-			if (a[i][col] != 0)
-			{
-				tmp1.push_back(a[i][col]);
-			}
-		}
-
-		if (tmp1.size() > 0)
-		{
-			for (int i = 0; i < tmp1.size() - 1; i++)
-			{
-				if (tmp1[i] == tmp1[i + 1] && tmp1[i] != 0)
-				{
-					tmp1[i] *= 2;
-					tmp1[i + 1] = 0;
-					sum += tmp1[i];
-				}
-			}
-
-			for (int i = 0; i < tmp1.size(); i++)
-			{
-				if (tmp1[i] != 0) tmp2.push_back(tmp1[i]);
-			}
-
-
-			if (tmp2.size() < 4)
-				for (int i = 0; i < 4; i++)
-				{
-					if (i < tmp2.size())
-						a[i][col] = tmp2[i]; else a[i][col] = 0;
-				}
-		}
-
-	}
-
-}*/
 
 int main()
 {
@@ -335,6 +155,7 @@ int main()
 	int b[5] = { 2, 3, 6, 8, 10 };
 	int sum = 0;
 	int checkWinGame = 0;
+	int checkOverGame = 0;
 
 	srand(time(NULL));
 	int x = rand() % 4, y = rand() % 4;
@@ -345,7 +166,7 @@ int main()
 	
 
 
-
+	// Music
 	sf::Music music;
 	if (!music.openFromFile("media.io_Gianna-Rino-Gaetano.wav"))
 	{
@@ -353,8 +174,9 @@ int main()
 	}
 
 	music.setVolume(50.f);
-	//music.play();
-	//music.pause();
+	music.play();
+	
+
 
 	while (window.isOpen())
 	{
@@ -368,66 +190,58 @@ int main()
 				window.close();
 			}
 			
-			/*if (checkWin(a))
-			{
-				window.clear();
-				Texture texture1;
-				texture1.loadFromFile("youwin.jpg");
-				Sprite sprite(texture1);
-				window.draw(sprite);
-				window.display();
-			}*/
+			if (checkWinGame == 1) window.close();
+			if (checkGameOver(a)) window.close();
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				Left(a, sum);
-				if (checkWin(a)) break;
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) 
-					checkWinGame = 1;
+				if (checkWin(a)) checkWinGame = 1;
+				if (checkGameOver(a)) checkOverGame = 1;
+					
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				Right(a, sum);
-				if (checkWin(a)) break;
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) 
-					checkWinGame = 1;
+				if (checkWin(a)) checkWinGame = 1;
+				if (checkGameOver(a)) checkOverGame = 1;
+					
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				Up(a, sum);
-				if (checkWin(a)) break;
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) 
-					checkWinGame = 1;
+				if (checkWin(a)) checkWinGame = 1;
+				if (checkGameOver(a)) checkOverGame = 1;
+					
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
 				Down(a, sum);
-				if (checkWin(a)) break;
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a))
-					checkWinGame = 1;
-					break;
+				if (checkWin(a)) checkWinGame = 1;
+				if (checkGameOver(a)) checkOverGame = 1;
 			}
 
 			
 			//render
-				if (checkWinGame == 1) break;
-
+				
 				window.draw(sprite);
 				renderImage(a);
 				LoadImg("a.jpg", 850.5f, 50.52f);
 				LoadText(sum);
 				window.display();
+				
+				
 			
 
 		}
