@@ -1,6 +1,5 @@
 
 #include "Move.h"
-//#include "Variable.h"
 // Move down
 void Down(int a[][4], int &sum)
 {

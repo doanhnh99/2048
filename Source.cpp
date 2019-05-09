@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include<SFML\Graphics.hpp>
 #include<SFML/Audio.hpp>
 #include <ctime>
@@ -7,43 +8,18 @@
 #include "init.h"
 #include "checkWin.h"
 #include "checkGameOver.h"
+#include "convert.h"
 
 using namespace std;
 using namespace sf;
 
 
-
-const int width = 1200;
-const int height = 600;
+#define width  1200
+#define height  600
 
 RenderWindow window(VideoMode(width, height), "name window");
 
 
-
-string convert(int number)
-{
-	switch (number)
-	{
-	case 0:return "0.png";
-	case 2: return "2.jpg";
-	case 4: return "4.jpg";
-	case 8: return "8.jpg";
-	case 16: return "16.jpg";
-	case 32: return "32.jpg";
-	case 64: return "64.jpg";
-	case 128: return "128.jpg";
-	case 256: return "256.jpg";
-	case 512: return "512.jpg";
-	case 1024: return "1024.jpg";
-	case 2048: return "2048.jpg";
-	default:
-	{
-		cout << "Error convert";
-		system("pause");
-	}
-
-	}
-}
 
 void LoadText(int score)
 {
@@ -60,9 +36,27 @@ void LoadText(int score)
 	text.setString(to_string(score));
 	text.setCharacterSize(50);
 	text.setPosition(935.1, 110.5f);
-	text.setFillColor(sf::Color::Red);
+	text.setFillColor(sf::Color::Cyan);
 	window.draw(text);
+}
 
+void LoadMaxScore(int score)
+{
+	Font font;
+	if (!font.loadFromFile("Xcelsion.ttf"))
+	{
+		cout << "Error Loading file " << endl;
+	}
+
+	Text text;
+
+	text.setFont(font);
+	string temp = to_string(score);
+	text.setString(to_string(score));
+	text.setCharacterSize(80);
+	text.setPosition(800, 350.69);
+	text.setFillColor(sf::Color::Black);
+	window.draw(text);
 }
 
 void LoadImg(string url, double x = 0, double y = 0)
@@ -80,7 +74,7 @@ void renderImage(int a[4][4])
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			LoadImg(convert(a[i][j]), 400.1 + j * 105.1, 100.1 + i * 105.1);
+			LoadImg(convert(a[i][j]), 300 + j * 105.1, 100.1 + i * 105.1);
 		}
 	}
 }
@@ -95,6 +89,7 @@ int main()
 	int sum = 0;
 	int checkWinGame = 0;
 	int checkOverGame = 0;
+	int MaxScore = 0;
 
 	srand(time(NULL));
 	int x = rand() % 4, y = rand() % 4;
@@ -103,10 +98,7 @@ int main()
 	texture.loadFromFile("background.jpg");
 	Sprite sprite(texture);
 	
-
-
 	// Music
-
 	sf::Music music;
 	if (!music.openFromFile("media.io_Gianna-Rino-Gaetano.wav"))
 	{
@@ -130,16 +122,32 @@ int main()
 				window.close();
 			}
 			
-			if (checkWinGame == 1) window.close();
-			if (checkGameOver(a)) window.close();
+			if (checkWinGame == 1)
+			{
+				window.close();
+			}
+
+			if (checkGameOver(a))
+			{
+				window.close();
+			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				Left(a, sum);
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) checkWinGame = 1;
-				if (checkGameOver(a)) checkOverGame = 1;
+				if (checkWin(a))
+				{
+					checkWinGame = 1;
+					MaxScore = sum;
+				}
+
+				if (checkGameOver(a))
+				{
+					checkOverGame = 1;
+					MaxScore = sum;
+				}
 					
 			}
 
@@ -148,8 +156,17 @@ int main()
 				Right(a, sum);
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) checkWinGame = 1;
-				if (checkGameOver(a)) checkOverGame = 1;
+				if (checkWin(a))
+				{
+					checkWinGame = 1;
+					MaxScore = sum;
+				}
+
+				if (checkGameOver(a))
+				{
+					checkOverGame = 1;
+					MaxScore = sum;
+				}
 					
 			}
 
@@ -158,8 +175,18 @@ int main()
 				Up(a, sum);
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) checkWinGame = 1;
-				if (checkGameOver(a)) checkOverGame = 1;
+				if (checkWin(a))
+				{
+					checkWinGame = 1;
+					MaxScore = sum;
+				}
+
+				if (checkGameOver(a))
+				{
+					checkOverGame = 1;
+					MaxScore = sum;
+					
+				}
 					
 			}
 
@@ -168,17 +195,53 @@ int main()
 				Down(a, sum);
 				x = rand() % 4; y = rand() % 4;
 				if (a[x][y] == 0) a[x][y] = random(b);
-				if (checkWin(a)) checkWinGame = 1;
-				if (checkGameOver(a)) checkOverGame = 1;
+				
+				if (checkWin(a))
+				{
+					checkWinGame = 1;
+					MaxScore = sum;
+				}
+
+				if (checkGameOver(a))
+				{
+					checkOverGame = 1;
+					MaxScore = sum;
+
+				}
 			}
+
+			int tempPoint;
+			
+			
+
+			ifstream in("MaxScore.txt");
+			int initPoint;
+			in >> initPoint;
+			in.close();
+
+
+			if (MaxScore > 0 && MaxScore > initPoint)
+			{
+				ofstream on("MaxScore.txt");
+				initPoint = MaxScore;
+				on << initPoint;
+				on.close();
+			}
+			
 
 			//render
 				window.draw(sprite);
 				renderImage(a);
 				LoadImg("a.jpg", 850.5f, 50.52f);
+				LoadImg("MaxScore.jpg", 850.5f, 250.1f);
 				LoadText(sum);
-				window.display();
+				LoadMaxScore(initPoint);
+				/*if (MaxScore > 0 && MaxScore > initPoint)
+				{
 
+				}*/
+
+				window.display();
 		}
 
 	}
