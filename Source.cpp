@@ -4,34 +4,21 @@
 #include <ctime>
 #include "Move.h"
 #include "random.h"
+#include "init.h"
+#include "checkWin.h"
+#include "checkGameOver.h"
 
 using namespace std;
 using namespace sf;
 
 
 
-/*int random(int b[])
-{
-	srand(time(0));
-	int temp = rand() % 5;
-	if (b[temp] % 2 == 0) return 2;
-	else return 4;
-
-}*/
-
 const int width = 1200;
 const int height = 600;
 
 RenderWindow window(VideoMode(width, height), "name window");
 
-void init(int a[4][4])
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-			a[i][j] = 0;
-	}
-}
+
 
 string convert(int number)
 {
@@ -58,7 +45,7 @@ string convert(int number)
 	}
 }
 
-void LoadText(int xxx)
+void LoadText(int score)
 {
 	Font font;
 	if (!font.loadFromFile("Xcelsion.ttf"))
@@ -69,8 +56,8 @@ void LoadText(int xxx)
 	Text text;
 
 	text.setFont(font);
-	//string temp = to_string(x);
-	text.setString(to_string(xxx));
+	string temp = to_string(score);
+	text.setString(to_string(score));
 	text.setCharacterSize(50);
 	text.setPosition(935.1, 110.5f);
 	text.setFillColor(sf::Color::Red);
@@ -98,54 +85,6 @@ void renderImage(int a[4][4])
 	}
 }
 
-void print(int a[4][4])
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			cout << a[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
-
-bool checkWin(int a[4][4])
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-			if (a[i][j] == 2048) return true;
-	}
-
-	return false;
-
-}
-
-bool checkElement(int a[4][4])
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-			if (a[i][j] == 0) return false;
-	}
-	return true;
-}
-
-bool checkGameOver(int a[4][4])
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-			if (checkElement(a))
-			{
-				if (((i >= 0 && i <= 2) && (a[i][j] != a[i][j + 1] && a[i][j] != a[i + 1][j])) || (i = 3 && a[i][j] != a[i][j + 1])) return true;
-			}
-	}
-	return false;
-}
-
-
 
 
 int main()
@@ -167,6 +106,7 @@ int main()
 
 
 	// Music
+
 	sf::Music music;
 	if (!music.openFromFile("media.io_Gianna-Rino-Gaetano.wav"))
 	{
@@ -232,17 +172,12 @@ int main()
 				if (checkGameOver(a)) checkOverGame = 1;
 			}
 
-			
 			//render
-				
 				window.draw(sprite);
 				renderImage(a);
 				LoadImg("a.jpg", 850.5f, 50.52f);
 				LoadText(sum);
 				window.display();
-				
-				
-			
 
 		}
 
